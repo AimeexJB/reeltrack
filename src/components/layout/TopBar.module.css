@@ -1,0 +1,32 @@
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: var(--topbar-height);
+  padding: 0 var(--page-padding);
+  background: rgba(11, 13, 18, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.menuButton {
+  display: none;
+  background: none;
+  border: none;
+  padding: 6px;
+  margin-left: -6px;
+  color: var(--text);
+}
+
+@media (max-width: 900px) {
+  .menuButton {
+    display: flex;
+  }
+}
+
+.spacer {
+  flex: 1;
+}

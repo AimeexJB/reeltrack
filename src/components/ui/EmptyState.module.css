@@ -1,0 +1,25 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 24px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+.icon {
+  color: var(--text-faint);
+}
+
+.title {
+  font-weight: 600;
+}
+
+.description {
+  color: var(--text-muted);
+  font-size: 14px;
+  max-width: 420px;
+  margin-bottom: 8px;
+}

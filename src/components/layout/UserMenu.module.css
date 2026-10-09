@@ -1,0 +1,91 @@
+.loginButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.loginButton:hover {
+  background: var(--accent-hover);
+}
+
+.container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatarButton {
+  display: flex;
+  padding: 2px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: none;
+}
+
+.avatarButton:hover,
+.avatarButton[aria-expanded='true'] {
+  border-color: var(--accent);
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 240px;
+  padding: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.username {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  font-size: 14px;
+  text-align: left;
+}
+
+.item:hover {
+  background: var(--bg-hover);
+}
+
+@media (max-width: 600px) {
+  .loginButton span {
+    display: none;
+  }
+
+  .loginButton {
+    padding: 10px;
+  }
+}

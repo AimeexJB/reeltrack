@@ -1,0 +1,133 @@
+/* Design tokens — change colours/spacing here and the whole app follows. */
+:root {
+  --bg: #0b0d12;
+  --bg-elevated: #141822;
+  --bg-hover: #1c2130;
+  --bg-input: #10131b;
+  --border: #252b3a;
+  --text: #e8eaf0;
+  --text-muted: #8b93a7;
+  --text-faint: #5d6478;
+
+  --accent: #7c5cff;
+  --accent-hover: #6a48f5;
+  --accent-soft: rgba(124, 92, 255, 0.16);
+  --success: #2ecc8f;
+  --success-soft: rgba(46, 204, 143, 0.16);
+  --warning: #f5b942;
+  --danger: #ff5c7a;
+
+  --movie: #4da3ff;
+  --tv: #ff8a4d;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+  --sidebar-width: 232px;
+  --topbar-height: 68px;
+  --page-padding: 32px;
+  --card-width: 160px;
+
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --page-padding: 16px;
+    --card-width: 128px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Stop the page scrolling behind an open modal. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Shared form controls */
+.input,
+.select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  min-height: 42px;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

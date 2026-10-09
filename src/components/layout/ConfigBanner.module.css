@@ -1,0 +1,29 @@
+.banner {
+  display: flex;
+  gap: 14px;
+  padding: 16px 18px;
+  margin-bottom: 24px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(245, 185, 66, 0.4);
+  background: rgba(245, 185, 66, 0.08);
+  color: var(--warning);
+}
+
+.banner p {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.banner a {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.banner code {
+  background: var(--bg-hover);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 13px;
+}

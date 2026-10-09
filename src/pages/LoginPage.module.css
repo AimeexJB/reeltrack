@@ -1,0 +1,69 @@
+.page {
+  display: flex;
+  justify-content: center;
+  padding-top: 6vh;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 400px;
+  padding: 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin-top: -10px;
+  color: var(--text-muted);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.switch {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.switch button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.note {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.notice {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: 14px;
+}

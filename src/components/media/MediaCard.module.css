@@ -1,0 +1,155 @@
+.card {
+  position: relative;
+  width: 100%;
+}
+
+.link {
+  display: block;
+}
+
+.poster {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+
+.poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.card:hover .poster img {
+  transform: scale(1.04);
+}
+
+.card:hover .title {
+  color: var(--accent);
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.rating,
+.status {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 7px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  backdrop-filter: blur(6px);
+}
+
+.rating {
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--warning);
+}
+
+.status {
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.status[data-status='watchlist'] {
+  color: var(--accent);
+}
+
+.status[data-status='watching'] {
+  color: var(--tv);
+}
+
+.status[data-status='completed'] {
+  color: var(--success);
+}
+
+.title {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.type {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.type[data-type='movie'] {
+  background: var(--movie);
+}
+
+.type[data-type='tv'] {
+  background: var(--tv);
+}
+
+/* Quick View button — appears on hover/focus; always visible on touch screens. */
+.quickButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.15s, transform 0.15s, background 0.15s;
+}
+
+.card:hover .quickButton,
+.card:focus-within .quickButton {
+  opacity: 1;
+  transform: none;
+}
+
+.quickButton:hover {
+  background: var(--accent);
+}
+
+.quickButton[data-tracked='true'] {
+  background: var(--success);
+  color: var(--bg);
+}
+
+@media (hover: none) {
+  .quickButton {
+    opacity: 1;
+    transform: none;
+  }
+}

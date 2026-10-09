@@ -1,0 +1,23 @@
+/* Shared layout for the sections on the profile page. */
+.section {
+  margin-bottom: 48px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.heading {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.subTabs {
+  margin-bottom: 20px;
+}

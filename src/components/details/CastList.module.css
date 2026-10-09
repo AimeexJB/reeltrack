@@ -1,0 +1,43 @@
+.section {
+  margin-bottom: 40px;
+}
+
+.heading {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.list {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 110px;
+  gap: 16px;
+  overflow-x: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 4px;
+  scrollbar-width: none;
+}
+
+.photo {
+  display: block;
+  width: 110px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg-elevated);
+  margin-bottom: 8px;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.character {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+}

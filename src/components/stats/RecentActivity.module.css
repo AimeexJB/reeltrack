@@ -1,0 +1,55 @@
+.card {
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.heading {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title:hover {
+  color: var(--accent);
+}
+
+.code {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+
+.meta {
+  margin-left: auto;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-size: 13px;
+}
