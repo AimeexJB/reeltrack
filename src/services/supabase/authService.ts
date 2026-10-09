@@ -2,6 +2,7 @@
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import type { User } from '@/types/user';
+import { normalizeUsername, validateDisplayName, validateUsername } from '@/utils/validation';
 import type { AuthService } from '../types';
 import { getSupabase } from './client';
 import { toUser, type ProfileRow } from './rows';
@@ -46,10 +47,9 @@ export const supabaseAuthService: AuthService = {
   },
 
   async register({ email, username, password, displayName }) {
-    const normalized = username.trim().toLowerCase();
-    if (!/^[a-z0-9_.]{3,30}$/.test(normalized)) {
-      throw new Error('Username must be 3–30 characters: letters, numbers, dots or underscores.');
-    }
+    const normalized = normalizeUsername(username);
+    const usernameError = validateUsername(normalized);
+    if (usernameError) throw new Error(usernameError);
     const client = await getSupabase();
     const { data: available } = await client.rpc('username_available', { name: normalized });
     if (available === false) throw new Error('That username is already taken.');
@@ -72,13 +72,27 @@ export const supabaseAuthService: AuthService = {
   },
 
   async updateProfile(userId, changes) {
+    const row: Partial<Pick<ProfileRow, 'display_name' | 'avatar_url' | 'username'>> = {};
+    if (changes.displayName !== undefined) {
+      const error = validateDisplayName(changes.displayName);
+      if (error) throw new Error(error);
+      row.display_name = changes.displayName.trim();
+    }
+    if (changes.avatarUrl !== undefined) row.avatar_url = changes.avatarUrl;
+    if (changes.username !== undefined) {
+      row.username = normalizeUsername(changes.username);
+      const error = validateUsername(row.username);
+      if (error) throw new Error(error);
+    }
+
     const { data, error } = await (await getSupabase())
       .from('profiles')
-      .update({ display_name: changes.displayName, avatar_url: changes.avatarUrl })
+      .update(row)
       .eq('id', userId)
       .select()
       .single<ProfileRow>();
-    if (error) throw new Error(error.message);
+    // 23505 = unique violation: someone else already has this username.
+    if (error) throw new Error(error.code === '23505' ? 'That username is already taken.' : error.message);
     return toUser(data);
   },
 };

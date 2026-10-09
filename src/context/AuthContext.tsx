@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { authService, backendKind } from '@/services';
-import type { BackendKind, RegisterInput } from '@/services/types';
+import type { BackendKind, ProfileChanges, RegisterInput } from '@/services/types';
 import type { User } from '@/types/user';
 
 interface AuthContextValue {
@@ -11,7 +11,7 @@ interface AuthContextValue {
   login: (identifier: string, password: string) => Promise<void>;
   register: (input: RegisterInput) => Promise<{ needsConfirmation: boolean }>;
   logout: () => Promise<void>;
-  updateProfile: (changes: Partial<Pick<User, 'displayName' | 'avatarUrl'>>) => Promise<void>;
+  updateProfile: (changes: ProfileChanges) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const updateProfile = useCallback(
-    async (changes: Partial<Pick<User, 'displayName' | 'avatarUrl'>>) => {
+    async (changes: ProfileChanges) => {
       if (user) setUser(await authService.updateProfile(user.id, changes));
     },
     [user],

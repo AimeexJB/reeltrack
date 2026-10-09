@@ -5,6 +5,7 @@
 
 import type { User } from '@/types/user';
 import { createId } from '@/utils/id';
+import { normalizeUsername, validateDisplayName, validateUsername } from '@/utils/validation';
 import { storage } from '../storage';
 import type { AuthService } from '../types';
 
@@ -60,8 +61,9 @@ export const localAuthService: AuthService = {
   },
 
   async register({ username, password, displayName }) {
-    const normalized = username.trim().toLowerCase();
-    if (normalized.length < 3) throw new Error('Username must be at least 3 characters.');
+    const normalized = normalizeUsername(username);
+    const usernameError = validateUsername(normalized);
+    if (usernameError) throw new Error(usernameError);
     if (password.length < 6) throw new Error('Password must be at least 6 characters.');
 
     const users = getStoredUsers();
@@ -92,7 +94,21 @@ export const localAuthService: AuthService = {
     const users = getStoredUsers();
     const index = users.findIndex((user) => user.id === userId);
     if (index === -1) throw new Error('User not found.');
-    users[index] = { ...users[index], ...changes };
+
+    const update = { ...changes };
+    if (update.displayName !== undefined) {
+      const error = validateDisplayName(update.displayName);
+      if (error) throw new Error(error);
+      update.displayName = update.displayName.trim();
+    }
+    if (update.username !== undefined) {
+      update.username = normalizeUsername(update.username);
+      const error = validateUsername(update.username);
+      if (error) throw new Error(error);
+      if (users.some((user) => user.id !== userId && user.username === update.username)) throw new Error('That username is already taken.');
+    }
+
+    users[index] = { ...users[index], ...update };
     storage.set(USERS_KEY, users);
     return toPublicUser(users[index]);
   },

@@ -51,10 +51,8 @@
   font-size: 14px;
 }
 
-.error {
-  color: var(--danger);
-  font-size: 13px;
-  margin-top: 4px;
+.editButton {
+  margin-top: 10px;
 }
 
 .totals {

@@ -20,20 +20,42 @@ const SUPPORTS_CLOSEDBY = typeof HTMLDialogElement !== 'undefined' && 'closedBy'
  */
 export function Modal({ open, onClose, labelledBy, children, className }: ModalProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  // The browser fires the native "close" event a moment *after* a dialog closes. If the parent already
+  // knows about the close (we told it, or it asked for it), that late event must be ignored — otherwise
+  // it could shut a dialog the user has just reopened.
+  const ignoreNextCloseEvent = useRef(false);
 
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
     if (open && !dialog.open) dialog.showModal();
-    if (!open && dialog.open) dialog.close();
+    if (!open && dialog.open) {
+      ignoreNextCloseEvent.current = true;
+      dialog.close();
+    }
   }, [open]);
+
+  /** Tell the parent straight away when the user closes the dialog (✕, Esc, clicking outside). */
+  const closeFromUser = () => {
+    ignoreNextCloseEvent.current = true;
+    onClose();
+  };
+
+  /** Fallback for closes we weren't told about in advance (e.g. light dismiss in some browsers). */
+  const handleCloseEvent = () => {
+    if (ignoreNextCloseEvent.current) {
+      ignoreNextCloseEvent.current = false;
+      return;
+    }
+    onClose();
+  };
 
   const handleBackdropClick = (event: MouseEvent<HTMLDialogElement>) => {
     if (SUPPORTS_CLOSEDBY || event.target !== event.currentTarget) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const insideContent =
       rect.top <= event.clientY && event.clientY <= rect.bottom && rect.left <= event.clientX && event.clientX <= rect.right;
-    if (!insideContent) event.currentTarget.close();
+    if (!insideContent) closeFromUser();
   };
 
   return (
@@ -41,11 +63,13 @@ export function Modal({ open, onClose, labelledBy, children, className }: ModalP
       ref={ref}
       closedby="any"
       aria-labelledby={labelledBy}
-      onClose={onClose}
+      // Esc and light dismiss fire "cancel" right away, before the native close happens.
+      onCancel={closeFromUser}
+      onClose={handleCloseEvent}
       onClick={handleBackdropClick}
       className={[styles.modal, className].filter(Boolean).join(' ')}
     >
-      <button type="button" className={styles.close} onClick={() => ref.current?.close()} aria-label="Close">
+      <button type="button" className={styles.close} onClick={closeFromUser} aria-label="Close">
         <X size={20} />
       </button>
       {children}

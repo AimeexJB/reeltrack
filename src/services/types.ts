@@ -7,6 +7,8 @@ import type { User, UserData } from '@/types/user';
 
 export type BackendKind = 'local' | 'supabase';
 
+export type ProfileChanges = Partial<Pick<User, 'displayName' | 'avatarUrl' | 'username'>>;
+
 export interface RegisterInput {
   username: string;
   password: string;
@@ -23,7 +25,8 @@ export interface AuthService {
   /** `needsConfirmation` is true when Supabase wants the user to click an email link first. */
   register(input: RegisterInput): Promise<{ needsConfirmation: boolean }>;
   logout(): Promise<void>;
-  updateProfile(userId: string, changes: Partial<Pick<User, 'displayName' | 'avatarUrl'>>): Promise<User>;
+  /** Throws a user-friendly Error (e.g. "That username is already taken."). */
+  updateProfile(userId: string, changes: ProfileChanges): Promise<User>;
 }
 
 export interface LibraryRepository {
