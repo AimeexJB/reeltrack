@@ -1,9 +1,9 @@
 /**
- * Cloudflare Worker that serves Reeltrack at aimeeredmond.com/reeltracker.
+ * Cloudflare Worker that serves Reeltrack at www.aimeeredmond.com/reeltracker.
  *
  * The route in wrangler.jsonc sends only `/reeltracker*` here — the rest of the domain
  * (the portfolio) is untouched. This Worker:
- *   1. redirects `/reeltracker` → `/reeltracker/`
+ *   1. redirects the bare domain to www, and `/reeltracker` → `/reeltracker/`
  *   2. proxies `/reeltracker/api/tmdb/*` to TMDB, adding the secret TMDB_TOKEN server-side
  *      (so the token never appears in the browser)
  *   3. serves the built app from ./dist; unknown app routes fall back to index.html
@@ -16,6 +16,8 @@ interface Env {
 }
 
 const PREFIX = '/reeltracker';
+/** The site's main address (the portfolio also redirects the bare domain to www). */
+const CANONICAL_HOST = 'www.aimeeredmond.com';
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 const TMDB_CACHE_SECONDS = 600;
 
@@ -42,6 +44,12 @@ async function proxyTmdb(request: Request, path: string, search: string, env: En
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+
+    // aimeeredmond.com/reeltracker… → www.aimeeredmond.com/reeltracker… (one address, so logins/storage are shared).
+    if (url.hostname === 'aimeeredmond.com') {
+      url.hostname = CANONICAL_HOST;
+      return Response.redirect(url.toString(), 301);
+    }
 
     if (url.pathname === PREFIX) return Response.redirect(`${url.origin}${PREFIX}/`, 301);
 

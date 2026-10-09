@@ -12,8 +12,12 @@
     // The Worker runs first so it can strip the /reeltracker prefix and proxy TMDB.
     "run_worker_first": true
   },
-  // Only this path on the domain comes here; the rest of aimeeredmond.com is the portfolio.
-  "routes": [{ "pattern": "aimeeredmond.com/reeltracker*", "zone_name": "aimeeredmond.com" }],
+  // Only this path on the domain comes here; the rest of (www.)aimeeredmond.com is the portfolio.
+  // The site's main address is www — requests to the bare domain are redirected there by the Worker.
+  "routes": [
+    { "pattern": "www.aimeeredmond.com/reeltracker*", "zone_name": "aimeeredmond.com" },
+    { "pattern": "aimeeredmond.com/reeltracker*", "zone_name": "aimeeredmond.com" }
+  ],
   "workers_dev": false,
   "observability": { "enabled": true }
 }

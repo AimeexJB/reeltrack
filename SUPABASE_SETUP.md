@@ -47,7 +47,7 @@ By default, Supabase emails a confirmation link to every new account. For a pers
 
 If you keep it on, go to **Authentication → URL Configuration** and set **Site URL** to `http://localhost:5174`, so the link brings you back to the app.
 
-> **Once the app is online**, set the Site URL to `https://aimeeredmond.com/reeltracker` and add `https://aimeeredmond.com/reeltracker/**` under Redirect URLs. See [DEPLOYMENT.md](DEPLOYMENT.md).
+> **Once the app is online**, set the Site URL to `https://www.aimeeredmond.com/reeltracker` and add `https://www.aimeeredmond.com/reeltracker/**` under Redirect URLs. See [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## 5. Create your account and move your data across
 

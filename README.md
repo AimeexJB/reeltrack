@@ -112,7 +112,7 @@ flowchart LR
 reeltrack/
 ├── worker/index.ts                Cloudflare Worker: serves the app at /reeltracker and proxies TMDB (hides the key)
 ├── wrangler.jsonc                 Cloudflare deploy config (route, static assets)
-├── DEPLOYMENT.md                  How to put the app online at aimeeredmond.com/reeltracker
+├── DEPLOYMENT.md                  How to put the app online at www.aimeeredmond.com/reeltracker
 ├── supabase/
 │   ├── schema.sql                 Tables, row-level security, sign-up trigger, helper functions
 │   └── functions/plex-webhook/    Edge Function that receives Plex "finished watching" events
@@ -291,7 +291,7 @@ Every table has **row-level security**, so users can only read and write their o
 
 ## Deploying
 
-The live app is at **[aimeeredmond.com/reeltracker](https://aimeeredmond.com/reeltracker)**. It runs as a **Cloudflare Worker with static assets** (`wrangler.jsonc`), with a route that claims only `/reeltracker*`, so the portfolio on the rest of the domain is untouched. Every push to `main` redeploys automatically.
+The live app is at **[www.aimeeredmond.com/reeltracker](https://www.aimeeredmond.com/reeltracker)**. It runs as a **Cloudflare Worker with static assets** (`wrangler.jsonc`), with a route that claims only `/reeltracker*`, so the portfolio on the rest of the domain is untouched. Every push to `main` redeploys automatically.
 
 - **Sub-path:** the build uses `BASE_PATH=/reeltracker/`, which Vite's `base` and the router's `basename` both use. Local dev still runs at `/`.
 - **The TMDB key stays secret.** With `VITE_TMDB_PROXY=true`, the browser calls `/reeltracker/api/tmdb/…`, and `worker/index.ts` adds the `TMDB_TOKEN` secret on the server. That key is never sent to the browser.

@@ -1,9 +1,9 @@
-# Deploying Reeltrack to `aimeeredmond.com/reeltracker`
+# Deploying Reeltrack to `www.aimeeredmond.com/reeltracker`
 
-Reeltrack runs on Cloudflare as a single **Worker with static assets**, and a **route** sends it only `aimeeredmond.com/reeltracker*`. Your portfolio keeps serving the rest of the domain, unchanged, and nothing in the portfolio repo needs to change.
+Reeltrack runs on Cloudflare as a single **Worker with static assets**, and **routes** send it only `/reeltracker*` on `www.aimeeredmond.com` (and on the bare `aimeeredmond.com`, which redirects to `www`). Your portfolio keeps serving the rest of the domain, unchanged, and nothing in the portfolio repo needs to change.
 
 ```
-aimeeredmond.com/reeltracker*  ──▶ Reeltrack Worker (worker/index.ts)
+www.aimeeredmond.com/reeltracker*  ──▶ Reeltrack Worker (worker/index.ts)
                                      ├─ /reeltracker/api/tmdb/…  → TMDB, with the secret TMDB_TOKEN added server-side
                                      └─ everything else          → the built app in dist/ (index.html for app routes)
 aimeeredmond.com/<anything else> ─▶ the portfolio, as before
@@ -24,7 +24,11 @@ In the **Cloudflare dashboard**, go to **Workers & Pages → Create → Import a
 The project name, route and asset settings come from [`wrangler.jsonc`](wrangler.jsonc).
 
 ### 2. Build variables
-These are used while the app is built. In the setup screen, or later under **Settings → Build → Variables and secrets**, add:
+These are used **while the app is built**, so they go under **Worker → Settings → Build → Build variables and secrets**.
+
+⚠️ This is a different place from the runtime **Settings → Variables and Secrets** used in step 3. Variables put there are not available during the build.
+
+Add:
 
 | Name | Value |
 | --- | --- |
@@ -45,12 +49,12 @@ This is used by the Worker. Go to **Worker → Settings → Variables and Secret
 - **Value:** your TMDB token (the same one as `VITE_TMDB_TOKEN` in `.env`)
 
 ### 4. Deploy
-Trigger a deploy, or push to `main`. Then open **https://aimeeredmond.com/reeltracker**.
+Trigger a deploy, or push to `main`. Then open **https://www.aimeeredmond.com/reeltracker**.
 
 ### 5. Supabase
 1. Go to **Authentication → URL Configuration**:
-   - **Site URL:** `https://aimeeredmond.com/reeltracker`
-   - **Redirect URLs:** add `https://aimeeredmond.com/reeltracker/**`, and keep `http://localhost:5174/**` for local development.
+   - **Site URL:** `https://www.aimeeredmond.com/reeltracker`
+   - **Redirect URLs:** add `https://www.aimeeredmond.com/reeltracker/**`, and keep `http://localhost:5174/**` for local development.
 2. Go to **Authentication → Sign In / Providers** and turn **off** "Allow new users to sign up". Your existing account keeps working.
 
 ### 6. Optional: only let your friends in
@@ -80,7 +84,8 @@ npx wrangler dev        # → http://localhost:8787/reeltracker/
 Normal development is unchanged: `npm run dev` at http://localhost:5174/.
 
 ## Troubleshooting
-- **The page shows your portfolio's 404 instead of Reeltrack.** The route isn't attached. Check **Worker → Settings → Domains & Routes** for `aimeeredmond.com/reeltracker*`, and make sure the `aimeeredmond.com` DNS record is **Proxied** (orange cloud).
+- **The page shows your portfolio's 404 instead of Reeltrack.** The routes aren't attached. Check **Worker → Settings → Domains & Routes** for `www.aimeeredmond.com/reeltracker*` and `aimeeredmond.com/reeltracker*`, and make sure both DNS records are **Proxied** (orange cloud).
+- **Blank page, or the app's files return your portfolio.** The build didn't get `BASE_PATH=/reeltracker/`. Check that the step 2 variables are under **Build** variables, then retry the deployment.
 - **"TMDB rejected the token. Check the TMDB_TOKEN secret".** The secret is missing or wrong (step 3).
 - **Login doesn't work.** Check the Supabase URL settings (step 5) and the `VITE_SUPABASE_*` build variables, then redeploy.
 - **Plex.** Use **Sign in with Plex**. On the secure site, browsers block plain `http://` server addresses.
