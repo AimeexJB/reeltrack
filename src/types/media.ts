@@ -21,6 +21,8 @@ export interface MediaSummary {
   voteCount: number;
   popularity: number;
   genreIds: number[];
+  /** ISO 639-1 code, e.g. 'ja'. Used to tell anime apart (older saved items may not have it yet). */
+  originalLanguage?: string;
 }
 
 export interface CastMember {

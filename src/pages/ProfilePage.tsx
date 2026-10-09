@@ -11,7 +11,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useLibrary } from '@/context/LibraryContext';
 import type { MediaType } from '@/types/media';
 
-/** The user's hub: upcoming episodes, stats, custom lists, then Movies and TV Shows shelves (each with Watchlist / Watching / Completed). */
+/** The user's hub: upcoming episodes, stats, custom lists, then Movies, TV Shows and Anime shelves (each with Watchlist / Watching / Completed). */
 export default function ProfilePage() {
   const { user } = useAuth();
   const { data, loaded } = useLibrary();
@@ -43,8 +43,9 @@ export default function ProfilePage() {
       </section>
 
       <CustomLists lists={data.lists} />
-      <LibraryShelves library={data.library} mediaType="movie" />
-      <LibraryShelves library={data.library} mediaType="tv" />
+      <LibraryShelves library={data.library} category="movie" />
+      <LibraryShelves library={data.library} category="tv" />
+      <LibraryShelves library={data.library} category="anime" />
     </>
   );
 }

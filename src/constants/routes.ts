@@ -6,6 +6,7 @@ export const paths = {
   search: '/search',
   movies: '/movies',
   tvShows: '/tv-shows',
+  anime: '/anime',
   profile: '/profile',
   settings: '/settings',
   login: '/login',

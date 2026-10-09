@@ -4,6 +4,7 @@ import { isTmdbConfigured } from '@/api/tmdb';
 import { Spinner } from '@/components/ui/Spinner';
 import { QuickViewProvider } from '@/context/QuickViewContext';
 import { useAutoCompleteShows } from '@/hooks/useAutoCompleteShows';
+import { useBackfillAnimeInfo } from '@/hooks/useBackfillAnimeInfo';
 import { ConfigBanner } from './ConfigBanner';
 import { Sidebar } from './Sidebar';
 import { SyncErrorBanner } from './SyncErrorBanner';
@@ -14,6 +15,7 @@ import styles from './AppLayout.module.css';
 export function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   useAutoCompleteShows();
+  useBackfillAnimeInfo();
 
   return (
     <QuickViewProvider>

@@ -70,12 +70,23 @@ const SORT_PARAMS: Record<SortOption, Record<MediaType, string>> = {
   newest: { movie: 'primary_release_date.desc', tv: 'first_air_date.desc' },
 };
 
+export type DiscoverFilters = Omit<SearchFilters, 'query' | 'mediaType' | 'sort'> & {
+  sort?: SortOption;
+  /** Extra genres that must *all* match (e.g. Animation for anime). */
+  requiredGenreIds?: number[];
+  /** ISO 639-1 original language, e.g. 'ja'. */
+  originalLanguage?: string;
+  /** TV only: shows with an episode airing in the last/next week. */
+  airingNow?: boolean;
+  /** Minimum number of ratings — filters out obscure titles that game the popularity score. */
+  minVoteCount?: number;
+};
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const isoDate = (date: Date) => date.toISOString().slice(0, 10);
+
 /** Browse the whole TMDB catalogue with filters (no text query). */
-export async function discover(
-  mediaType: MediaType,
-  filters: Omit<SearchFilters, 'query' | 'mediaType' | 'sort'> & { sort?: SortOption },
-  page = 1,
-): Promise<Paged> {
+export async function discover(mediaType: MediaType, filters: DiscoverFilters, page = 1): Promise<Paged> {
   const sort = filters.sort ?? 'popularity';
   const isMovie = mediaType === 'movie';
 
@@ -83,10 +94,14 @@ export async function discover(
     page,
     include_adult: 'false',
     sort_by: SORT_PARAMS[sort][mediaType],
-    with_genres: filters.genreId,
+    // Comma = AND in TMDB, so "16,10759" means Animation *and* Action & Adventure.
+    with_genres: [...(filters.requiredGenreIds ?? []), filters.genreId].filter(Boolean).join(',') || undefined,
+    with_original_language: filters.originalLanguage,
+    'air_date.gte': filters.airingNow && !isMovie ? isoDate(new Date(Date.now() - WEEK_MS)) : undefined,
+    'air_date.lte': filters.airingNow && !isMovie ? isoDate(new Date(Date.now() + WEEK_MS)) : undefined,
     'vote_average.gte': filters.minRating,
     // Without a vote floor, "highest rated" is dominated by obscure titles with one 10/10 vote.
-    'vote_count.gte': sort === 'rating' ? 300 : sort === 'newest' ? 10 : undefined,
+    'vote_count.gte': filters.minVoteCount ?? (sort === 'rating' ? 300 : sort === 'newest' ? 10 : undefined),
     [isMovie ? 'primary_release_year' : 'first_air_date_year']: filters.year,
     // Keep "newest" to things that have actually been released.
     [isMovie ? 'primary_release_date.lte' : 'first_air_date.lte']: sort === 'newest' ? todayIso() : undefined,

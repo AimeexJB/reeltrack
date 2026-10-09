@@ -12,6 +12,7 @@ import { BROWSE_CATEGORIES } from '@/constants/mediaLists';
 import { MEDIA_TYPE_LABELS } from '@/constants/tracking';
 import { useInfiniteMedia } from '@/hooks/useMediaQueries';
 import type { MediaType } from '@/types/media';
+import { isAnime } from '@/utils/media';
 import styles from './BrowseView.module.css';
 
 /**
@@ -27,10 +28,13 @@ export function BrowseView({ mediaType }: { mediaType: MediaType }) {
   const category = categories.find((item) => item.id === params.get('category')) ?? categories[0];
   const genre = genres.find((item) => item.id === genreId);
 
-  const { query, items } = useInfiniteMedia(
+  const { query, items: allItems } = useInfiniteMedia(
     genreId ? ['browse-genre', mediaType, genreId] : ['browse', category.path],
     (page) => (genreId ? discover(mediaType, { genreId }, page) : getMediaList(category.path, mediaType, page)),
   );
+
+  // Anime has its own page, so leave it out here.
+  const items = allItems.filter((media) => !isAnime(media));
 
   return (
     <div>

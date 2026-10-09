@@ -19,6 +19,14 @@ export function setStatus(data: UserData, media: MediaSummary, status: TrackStat
   return { ...data, library: { ...data.library, [key]: entry } };
 }
 
+/** Replace the stored details of a tracked title (e.g. to fill in newly added fields). Status and dates are kept. */
+export function refreshLibraryMedia(data: UserData, media: MediaSummary): UserData {
+  const key = mediaKey(media);
+  const entry = data.library[key];
+  if (!entry) return data;
+  return { ...data, library: { ...data.library, [key]: { ...entry, media: toSummary(media) } } };
+}
+
 export function removeFromLibrary(data: UserData, media: MediaSummary): UserData {
   const library = { ...data.library };
   delete library[mediaKey(media)];

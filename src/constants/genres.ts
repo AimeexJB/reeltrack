@@ -4,6 +4,8 @@ import type { Genre, MediaType } from '@/types/media';
  * TMDB genre ids rarely change, so we hard-code them instead of fetching on every load.
  * Source: GET /genre/movie/list and /genre/tv/list
  */
+export const ANIMATION_GENRE_ID = 16;
+
 export const MOVIE_GENRES: Genre[] = [
   { id: 28, name: 'Action' },
   { id: 12, name: 'Adventure' },

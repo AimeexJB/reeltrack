@@ -9,7 +9,8 @@ export function ListRow({ def }: { def: MediaListDef }) {
   const [ref, inView] = useInView<HTMLElement>();
   const { data, isLoading, error } = useMediaList(def.path, def.mediaType, inView);
 
-  const seeAllTo = def.browseCategory && def.mediaType ? `${paths.browse(def.mediaType)}?category=${def.browseCategory}` : undefined;
+  const seeAllTo =
+    def.seeAllPath ?? (def.browseCategory && def.mediaType ? `${paths.browse(def.mediaType)}?category=${def.browseCategory}` : undefined);
 
   return (
     <MediaRow

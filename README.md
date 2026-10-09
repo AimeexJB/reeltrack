@@ -29,10 +29,11 @@ Built with **React 19, TypeScript and Vite**. Movie and TV data comes from [TMDB
 | **Home** | A trending hero banner, then **Recommended for You** (based on your library), then rows for Most Watched, Recently Released, New Episodes, Top Rated and Coming Soon. |
 | **Navigation** | A sidebar (Home, Search, Movies, TV Shows, Profile, Import & Sync) and a top bar with instant search and your profile picture or a log-in button. |
 | **Search** | Instant results while you type in the top bar, plus a full search page with type, genre, year, rating and sort filters. Filters are kept in the URL, so searches can be shared and bookmarked. |
-| **Movies / TV Shows** | Category tabs (Popular, Trending, Top Rated, Upcoming…) and genre chips, with infinite scrolling. |
+| **Movies / TV Shows** | Category tabs (Popular, Trending, Top Rated, Upcoming…) and genre chips, with infinite scrolling. Anime is kept out and gets its own page. |
+| **Anime** | Its own page for Japanese animation (series and movies), with Popular, Airing Now, Top Rated and New Releases tabs and genre chips. It also has its own Watchlist / Watching / Completed section on your profile. |
 | **Quick View** | Press **+** on any poster for a pop-up preview with Watchlist, Watched and Add to list buttons, without leaving the page. |
 | **Detail pages** | Watchlist, Watching or Completed status, plus the cast, the trailer, an IMDb link and "More like this". **Movies:** log watches, including rewatches. **TV:** tick off episodes one at a time or a season at a time, use **Mark all as watched**, and log rewatches of a whole show, a season or a single episode. |
-| **Profile** | **Upcoming Episodes** for the shows you track, then **separate TV and movie stats**: hours watched and counts for this week, the last 6 months, the last year and lifetime, plus a 12-month chart, top genres and recent activity. Below that are your custom lists, then paginated **Movies** and **TV Shows** shelves (Watchlist, Watching, Completed). |
+| **Profile** | **Upcoming Episodes** for the shows you track, then **separate TV and movie stats**: hours watched and counts for this week, the last 6 months, the last year and lifetime, plus a 12-month chart, top genres and recent activity. Below that are your custom lists, then paginated **Movies**, **TV Shows** and **Anime** shelves (Watchlist, Watching, Completed). |
 | **Smart status** | A show moves to **Completed** automatically once it has finished airing and you've watched every episode. Running shows stay on **Watching**. |
 | **Import & Sync** | Backup and restore. Import from **IMDb** (ratings and watchlist CSVs) and **TV Time** (data export). **Plex:** a one-off history import via "Sign in with Plex" (this also works on servers shared with you), plus automatic logging with Plex Pass. |
 | **Accounts** | Browser-only by default. Add two Supabase keys for real email accounts and cross-device sync. |
@@ -211,6 +212,14 @@ TMDB's season list and its `lastAiredEpisode` tell the app how many episodes hav
 
 - **`hooks/useRecommendations.ts`**: takes your 6 most recently updated titles and fetches TMDB recommendations for each in parallel (`useQueries`). Titles that appear for several of them score higher, and anything you already track is hidden.
 - **`hooks/useUpcomingEpisodes.ts`**: reads `nextEpisode` for every TV show you track (cached for 6 hours), sorted by air date. The cards show "Today", "Tomorrow" or the weekday, and a Season premiere or Finale badge.
+
+### 7b. Anime — `utils/media.ts` (`isAnime`), `components/browse/AnimeView.tsx`
+
+TMDB has no "anime" type, so a title counts as anime when it's **Animation** (genre 16) **and** its original language is **Japanese**. This applies to series and movies alike.
+
+- **The Anime page** uses TMDB discover with those filters, plus a minimum number of ratings so obscure titles can't game the "popular" ranking.
+- **The TV Shows and Movies pages, and the profile shelves,** exclude anime.
+- **Older saved titles:** titles saved before anime support have no language recorded. `hooks/useBackfillAnimeInfo.ts` fetches it once for any tracked animated title, so they move into the Anime section automatically.
 
 ### 8. Quick View — `context/QuickViewContext.tsx` and `components/ui/Modal.tsx`
 

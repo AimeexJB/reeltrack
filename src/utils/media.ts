@@ -1,3 +1,4 @@
+import { ANIMATION_GENRE_ID } from '@/constants/genres';
 import type { MediaSummary } from '@/types/media';
 import type { SearchFilters, SortOption } from '@/types/search';
 import { getYear } from './date';
@@ -37,6 +38,11 @@ export function matchesFilters(media: MediaSummary, filters: SearchFilters): boo
 
 /** Strip detail-only fields (cast, seasons…) so only the lightweight summary is stored. */
 export function toSummary(media: MediaSummary): MediaSummary {
-  const { id, mediaType, title, posterPath, backdropPath, overview, releaseDate, rating, voteCount, popularity, genreIds } = media;
-  return { id, mediaType, title, posterPath, backdropPath, overview, releaseDate, rating, voteCount, popularity, genreIds };
+  const { id, mediaType, title, posterPath, backdropPath, overview, releaseDate, rating, voteCount, popularity, genreIds, originalLanguage } = media;
+  return { id, mediaType, title, posterPath, backdropPath, overview, releaseDate, rating, voteCount, popularity, genreIds, originalLanguage };
+}
+
+/** Anime = Japanese-language animation (series or movie). TMDB has no dedicated "anime" type. */
+export function isAnime(media: Pick<MediaSummary, 'genreIds' | 'originalLanguage'>): boolean {
+  return media.originalLanguage === 'ja' && media.genreIds.includes(ANIMATION_GENRE_ID);
 }

@@ -27,6 +27,8 @@ interface LibraryContextValue {
   getEntry: (media: MediaSummary) => LibraryEntry | undefined;
   setStatus: (media: MediaSummary, status: TrackStatus) => void;
   removeFromLibrary: (media: MediaSummary) => void;
+  /** Update a tracked title's saved details (keeps its status). */
+  refreshMedia: (media: MediaSummary) => void;
 
   getMovieWatchCount: (movieId: number) => number;
   logMovieWatch: (movie: MediaSummary, runtime: number) => void;
@@ -155,6 +157,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       getEntry: (media) => data.library[mediaKey(media)],
       setStatus: (media, status) => fire((d) => library.setStatus(d, media, status)),
       removeFromLibrary: (media) => fire((d) => library.removeFromLibrary(d, media)),
+      refreshMedia: (media) => fire((d) => library.refreshLibraryMedia(d, media)),
 
       getMovieWatchCount: (movieId) => data.watches.filter((w) => w.mediaType === 'movie' && w.tmdbId === movieId).length,
       logMovieWatch: (movie, runtime) => fire((d) => library.logMovieWatch(d, movie, runtime)),

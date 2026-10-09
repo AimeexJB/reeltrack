@@ -1,4 +1,4 @@
-import { Film, Home, Search, Settings, Tv, User, X, type LucideIcon } from 'lucide-react';
+import { Film, Home, Search, Settings, Sparkles, Tv, User, X, type LucideIcon } from 'lucide-react';
 import { NavLink } from 'react-router';
 import { APP_NAME } from '@/constants/defaults';
 import { paths } from '@/constants/routes';
@@ -15,6 +15,7 @@ const BROWSE_ITEMS: NavItem[] = [
   { to: paths.search, label: 'Search', icon: Search },
   { to: paths.movies, label: 'Movies', icon: Film },
   { to: paths.tvShows, label: 'TV Shows', icon: Tv },
+  { to: paths.anime, label: 'Anime', icon: Sparkles },
 ];
 
 const LIBRARY_ITEMS: NavItem[] = [

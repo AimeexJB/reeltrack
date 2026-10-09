@@ -21,6 +21,7 @@ export function toMediaSummary(raw: RawMedia, fallbackType?: MediaType): MediaSu
     voteCount: raw.vote_count ?? 0,
     popularity: raw.popularity ?? 0,
     genreIds: raw.genre_ids ?? raw.genres?.map((genre) => genre.id) ?? [],
+    originalLanguage: raw.original_language,
   };
 }
 

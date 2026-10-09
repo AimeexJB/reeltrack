@@ -8,6 +8,7 @@ const HomePage = lazy(() => import('@/pages/HomePage'));
 const SearchPage = lazy(() => import('@/pages/SearchPage'));
 const MoviesPage = lazy(() => import('@/pages/MoviesPage'));
 const TvShowsPage = lazy(() => import('@/pages/TvShowsPage'));
+const AnimePage = lazy(() => import('@/pages/AnimePage'));
 const MediaDetailPage = lazy(() => import('@/pages/MediaDetailPage'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
 const LoginPage = lazy(() => import('@/pages/LoginPage'));
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
       { path: 'search', element: <SearchPage /> },
       { path: 'movies', element: <MoviesPage /> },
       { path: 'tv-shows', element: <TvShowsPage /> },
+      { path: 'anime', element: <AnimePage /> },
       { path: 'movie/:id', element: <MediaDetailPage mediaType="movie" /> },
       { path: 'tv/:id', element: <MediaDetailPage mediaType="tv" /> },
       {

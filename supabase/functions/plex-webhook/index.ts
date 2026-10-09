@@ -103,6 +103,7 @@ function toMediaSummary(details: Json, mediaType: MediaType) {
     voteCount: details.vote_count ?? 0,
     popularity: details.popularity ?? 0,
     genreIds: (details.genres ?? []).map((genre: { id: number }) => genre.id),
+    originalLanguage: details.original_language,
   };
 }
 
