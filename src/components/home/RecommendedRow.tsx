@@ -27,7 +27,7 @@ export function RecommendedRow() {
                 ? 'Add movies or shows to your watchlist, or mark them as watched, and we’ll suggest what to watch next.'
                 : 'Track what you watch and we’ll recommend titles based on your watchlist and history.'
             }
-            action={!user && <Link to={paths.login} className={styles.loginLink}>Log in or sign up</Link>}
+            action={!user && <Link to={paths.login} className={styles.loginLink}>{import.meta.env.VITE_ALLOW_SIGNUPS === 'false' ? 'Log in' : 'Log in or sign up'}</Link>}
           />
         }
       />
