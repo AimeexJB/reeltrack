@@ -45,4 +45,7 @@ export const router = createBrowserRouter([
       { path: '*', element: <NotFoundPage /> },
     ],
   },
-]);
+], {
+  // "/reeltracker" in production, "/" locally — every Link/navigate gets the prefix automatically.
+  basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/',
+});

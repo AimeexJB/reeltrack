@@ -57,7 +57,11 @@ export const supabaseAuthService: AuthService = {
     const { data, error } = await client.auth.signUp({
       email: (email ?? '').trim(),
       password,
-      options: { data: { username: normalized, display_name: displayName.trim() || username.trim() } },
+      options: {
+        data: { username: normalized, display_name: displayName.trim() || username.trim() },
+        // Confirmation emails link back to wherever the app is hosted (e.g. /reeltracker/).
+        emailRedirectTo: window.location.origin + import.meta.env.BASE_URL,
+      },
     });
     if (error) throw new Error(error.message);
     return { needsConfirmation: !data.session };

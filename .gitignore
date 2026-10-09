@@ -9,3 +9,5 @@ dist
 .claude/
 supabase/.temp/
 supabase/.branches/
+.dev.vars
+.wrangler/

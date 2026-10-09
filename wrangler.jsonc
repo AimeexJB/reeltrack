@@ -1,0 +1,19 @@
+// Cloudflare deployment config — see DEPLOYMENT.md.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "reeltrack",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // Unknown paths (e.g. /tv/123) serve index.html so the React router can handle them.
+    "not_found_handling": "single-page-application",
+    // The Worker runs first so it can strip the /reeltracker prefix and proxy TMDB.
+    "run_worker_first": true
+  },
+  // Only this path on the domain comes here; the rest of aimeeredmond.com is the portfolio.
+  "routes": [{ "pattern": "aimeeredmond.com/reeltracker*", "zone_name": "aimeeredmond.com" }],
+  "workers_dev": false,
+  "observability": { "enabled": true }
+}

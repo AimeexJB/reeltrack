@@ -49,7 +49,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       <aside className={[styles.sidebar, open && styles.open].filter(Boolean).join(' ')}>
         <div className={styles.brand}>
           <NavLink to={paths.home} onClick={onClose} className={styles.logo}>
-            <img src="/favicon.svg" alt="" width={30} height={30} />
+            <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width={30} height={30} />
             {APP_NAME}
           </NavLink>
           <button type="button" className={styles.close} onClick={onClose} aria-label="Close menu">

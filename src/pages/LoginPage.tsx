@@ -9,6 +9,9 @@ import styles from './LoginPage.module.css';
 
 type Mode = 'login' | 'register';
 
+/** Online, sign-ups are invite-only (also enforced in Supabase). */
+const SIGNUPS_ALLOWED = import.meta.env.VITE_ALLOW_SIGNUPS !== 'false';
+
 export default function LoginPage() {
   const { user, initializing, backend, login, register } = useAuth();
   const location = useLocation();
@@ -114,12 +117,16 @@ export default function LoginPage() {
           {submitting ? 'Please wait…' : mode === 'login' ? 'Log in' : 'Create account'}
         </Button>
 
-        <p className={styles.switch}>
-          {mode === 'login' ? 'New here?' : 'Already have an account?'}{' '}
-          <button type="button" onClick={switchMode}>
-            {mode === 'login' ? 'Create an account' : 'Log in'}
-          </button>
-        </p>
+        {SIGNUPS_ALLOWED ? (
+          <p className={styles.switch}>
+            {mode === 'login' ? 'New here?' : 'Already have an account?'}{' '}
+            <button type="button" onClick={switchMode}>
+              {mode === 'login' ? 'Create an account' : 'Log in'}
+            </button>
+          </p>
+        ) : (
+          <p className={styles.switch}>Reeltrack is invite only.</p>
+        )}
 
         <p className={styles.note}>
           {usesEmail ? 'Synced to the cloud — log in from any device.' : 'Accounts are stored in this browser only.'}

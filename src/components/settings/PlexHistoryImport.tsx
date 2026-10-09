@@ -21,6 +21,9 @@ export function PlexHistoryImport() {
   const [step, setStep] = useState<Step>({ name: 'start' });
   const [error, setError] = useState<string | null>(null);
   const [accountId, setAccountId] = useState(1);
+  const [manualUrl, setManualUrl] = useState('http://127.0.0.1:32400');
+  // On the online (https) version, browsers block requests to plain http:// addresses.
+  const blockedByHttps = window.location.protocol === 'https:' && manualUrl.trim().startsWith('http://');
   const abort = useRef<AbortController | null>(null);
   const { phase, run, confirm, reset } = useImportFlow();
 
@@ -200,7 +203,7 @@ export function PlexHistoryImport() {
           <form className={styles.row} onSubmit={connectManually}>
             <label className={styles.field}>
               Server address
-              <input className="input" name="serverUrl" defaultValue="http://127.0.0.1:32400" required />
+              <input className="input" name="serverUrl" value={manualUrl} onChange={(event) => setManualUrl(event.target.value)} required />
             </label>
             <label className={styles.field}>
               Plex token
@@ -210,6 +213,12 @@ export function PlexHistoryImport() {
               <Link2 size={17} /> Connect
             </Button>
           </form>
+          {blockedByHttps && (
+            <p className={`${styles.message} ${styles.failure}`}>
+              Browsers block plain <code>http://</code> addresses on this secure site. Use <strong>Sign in with Plex</strong> above, or your
+              server’s secure address (it looks like <code>https://…plex.direct:32400</code>).
+            </p>
+          )}
           <p>Your token is only used for this import and is never saved.</p>
         </details>
       )}
