@@ -19,5 +19,7 @@
     { "pattern": "aimeeredmond.com/reeltracker*", "zone_name": "aimeeredmond.com" }
   ],
   "workers_dev": false,
+  // Keep variables/secrets added in the Cloudflare dashboard (e.g. TMDB_TOKEN) when deploying from Git.
+  "keep_vars": true,
   "observability": { "enabled": true }
 }
