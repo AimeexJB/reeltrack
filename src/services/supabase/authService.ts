@@ -3,9 +3,27 @@
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import type { User } from '@/types/user';
 import { normalizeUsername, validateDisplayName, validateUsername } from '@/utils/validation';
-import type { AuthService } from '../types';
+import type { AuthLinkInfo, AuthService } from '../types';
 import { getSupabase } from './client';
 import { toUser, type ProfileRow } from './rows';
+
+/**
+ * Invite and password-reset emails send people back with tokens in the URL hash
+ * (e.g. `#access_token=…&type=invite`). Supabase signs them in and then clears the hash,
+ * so read it now, when the app first loads, to know they still need to choose a password.
+ */
+const initialAuthLink: AuthLinkInfo = (() => {
+  if (typeof window === 'undefined') return { needsPassword: false, error: null };
+  const params = new URLSearchParams(window.location.hash.slice(1));
+  const type = params.get('type');
+  const error = params.get('error_description');
+  return {
+    needsPassword: type === 'invite' || type === 'recovery',
+    error: error ? `${error.replace(/\+/g, ' ')}. The link may have expired or already been used — request a new one below.` : null,
+  };
+})();
+
+const passwordPageUrl = () => `${window.location.origin}${import.meta.env.BASE_URL}reset-password`;
 
 async function loadProfile(authUser: SupabaseUser): Promise<User> {
   const { data } = await (await getSupabase()).from('profiles').select('*').eq('id', authUser.id).maybeSingle<ProfileRow>();
@@ -29,9 +47,12 @@ export const supabaseAuthService: AuthService = {
     getSupabase().then((client) => {
       if (cancelled) return;
       // Fires immediately with the saved session (if any), then on every login/logout/token refresh.
-      const { data } = client.auth.onAuthStateChange((_event, session) => {
+      const { data } = client.auth.onAuthStateChange((event, session) => {
         // Supabase recommends not awaiting other Supabase calls inside this callback, so defer it.
-        setTimeout(async () => callback(session?.user ? await loadProfile(session.user) : null), 0);
+        setTimeout(
+          async () => callback(session?.user ? await loadProfile(session.user) : null, { passwordRecovery: event === 'PASSWORD_RECOVERY' }),
+          0,
+        );
       });
       unsubscribe = () => data.subscription.unsubscribe();
     });
@@ -94,5 +115,20 @@ export const supabaseAuthService: AuthService = {
     // 23505 = unique violation: someone else already has this username.
     if (error) throw new Error(error.code === '23505' ? 'That username is already taken.' : error.message);
     return toUser(data);
+  },
+
+  readAuthLink() {
+    return initialAuthLink;
+  },
+
+  async requestPasswordReset(email) {
+    const { error } = await (await getSupabase()).auth.resetPasswordForEmail(email.trim(), { redirectTo: passwordPageUrl() });
+    if (error) throw new Error(error.message);
+  },
+
+  async setPassword(password) {
+    if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+    const { error } = await (await getSupabase()).auth.updateUser({ password });
+    if (error) throw new Error(error.message);
   },
 };

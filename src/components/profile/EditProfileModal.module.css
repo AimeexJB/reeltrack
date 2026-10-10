@@ -63,5 +63,17 @@
 .actions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 10px;
+}
+
+.passwordLink {
+  margin-right: auto;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.passwordLink:hover {
+  color: var(--text);
 }

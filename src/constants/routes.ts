@@ -10,6 +10,7 @@ export const paths = {
   profile: '/profile',
   settings: '/settings',
   login: '/login',
+  resetPassword: '/reset-password',
   media: (mediaType: MediaType, id: number) => `/${mediaType}/${id}`,
   browse: (mediaType: MediaType) => (mediaType === 'movie' ? '/movies' : '/tv-shows'),
 } as const;

@@ -1,9 +1,11 @@
 import { Trash2, Upload } from 'lucide-react';
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
+import { Link } from 'react-router';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { useAuth } from '@/context/AuthContext';
+import { paths } from '@/constants/routes';
 import type { ProfileChanges } from '@/services/types';
 import type { User } from '@/types/user';
 import { resizeImageToDataUrl } from '@/utils/image';
@@ -28,7 +30,7 @@ export function EditProfileModal({ user, open, onClose }: EditProfileModalProps)
 }
 
 function EditProfileForm({ user, onDone }: { user: User; onDone: () => void }) {
-  const { updateProfile } = useAuth();
+  const { updateProfile, supportsPasswordReset } = useAuth();
   const fileInput = useRef<HTMLInputElement>(null);
   const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl);
   const [displayName, setDisplayName] = useState(user.displayName);
@@ -121,6 +123,11 @@ function EditProfileForm({ user, onDone }: { user: User; onDone: () => void }) {
       )}
 
       <div className={styles.actions}>
+        {supportsPasswordReset && (
+          <Link to={paths.resetPassword} className={styles.passwordLink} onClick={onDone}>
+            Change password
+          </Link>
+        )}
         <Button variant="ghost" onClick={onDone} disabled={saving}>
           Cancel
         </Button>

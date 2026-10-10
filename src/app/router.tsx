@@ -13,6 +13,7 @@ const MediaDetailPage = lazy(() => import('@/pages/MediaDetailPage'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
 const LoginPage = lazy(() => import('@/pages/LoginPage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
 export const router = createBrowserRouter([
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
         ),
       },
       { path: 'login', element: <LoginPage /> },
+      { path: 'reset-password', element: <ResetPasswordPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Navigate, useLocation } from 'react-router';
+import { Link, Navigate, useLocation } from 'react-router';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 import { APP_NAME } from '@/constants/defaults';
@@ -13,7 +13,7 @@ type Mode = 'login' | 'register';
 const SIGNUPS_ALLOWED = import.meta.env.VITE_ALLOW_SIGNUPS !== 'false';
 
 export default function LoginPage() {
-  const { user, initializing, backend, login, register } = useAuth();
+  const { user, initializing, backend, login, register, supportsPasswordReset } = useAuth();
   const location = useLocation();
   const redirectTo = (location.state as { from?: string } | null)?.from ?? paths.home;
   // Supabase accounts sign in with an email address; browser-only accounts use a username.
@@ -111,6 +111,12 @@ export default function LoginPage() {
           <p className={styles.error} role="alert">
             {error}
           </p>
+        )}
+
+        {mode === 'login' && supportsPasswordReset && (
+          <Link to={paths.resetPassword} className={styles.forgot}>
+            Forgot password?
+          </Link>
         )}
 
         <Button type="submit" variant="primary" disabled={submitting}>

@@ -36,7 +36,7 @@ Built with **React 19, TypeScript and Vite**. Movie and TV data comes from [TMDB
 | **Profile** | **Upcoming Episodes** for the shows you track, then **separate TV and movie stats**: hours watched and counts for this week, the last 6 months, the last year and lifetime, plus a 12-month chart, top genres and recent activity. Below that are your custom lists, then paginated **Movies**, **TV Shows** and **Anime** shelves (Watchlist, Watching, Completed). |
 | **Smart status** | A show moves to **Completed** automatically once it has finished airing and you've watched every episode. Running shows stay on **Watching**. |
 | **Import & Sync** | Backup and restore. Import from **IMDb** (ratings and watchlist CSVs) and **TV Time** (data export). **Plex:** a one-off history import via "Sign in with Plex" (this also works on servers shared with you), plus automatic logging with Plex Pass. |
-| **Accounts** | Browser-only by default. Add two Supabase keys for real email accounts and cross-device sync. |
+| **Accounts** | Browser-only by default. Add two Supabase keys for real email accounts and cross-device sync. Invite emails lead to a **Set your password** page. There's also **Forgot password?** on the login page and **Change password** under Edit profile. |
 
 ---
 

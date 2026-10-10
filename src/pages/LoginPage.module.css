@@ -67,3 +67,20 @@
   color: var(--success);
   font-size: 14px;
 }
+
+.forgot {
+  align-self: flex-end;
+  margin-top: -8px;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.forgot:hover,
+.switch a:hover {
+  color: var(--text);
+}
+
+.switch a {
+  color: var(--accent);
+  font-weight: 600;
+}

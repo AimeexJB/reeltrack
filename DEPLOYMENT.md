@@ -69,10 +69,24 @@ It's free for up to 50 users. Anyone else can't even load the page.
 ---
 
 ## Adding a friend
-1. Turn sign-ups back on in Supabase, and set `VITE_ALLOW_SIGNUPS=true` in Cloudflare.
-2. Redeploy.
-3. Have your friend create their account.
-4. Switch both back.
+
+**Recommended: invite them.** Sign-ups stay closed and nothing needs redeploying.
+
+1. In **Supabase → Authentication → Users**, click **Add user → Send invitation**, and enter your friend's email.
+2. Your friend opens the email and clicks the link. Reeltrack signs them in and shows **"Set your password"**.
+3. They choose a password. They're in, and can log in from any device from then on.
+
+Notes:
+- **Links are one-time and expire.** Some email apps "pre-open" links to check them for viruses, which can use up the link. If your friend sees "link is invalid or has expired", they can type their email on that same page to get a fresh link, or you can send a new invite.
+- **If emails don't arrive:** Supabase's built-in email service only sends a few emails an hour, and on newer projects may only deliver to members of your Supabase team. For reliable delivery, add a free email provider such as [Resend](https://resend.com) under **Authentication → Emails → SMTP Settings**.
+- **No-email alternative:** go to **Add user → Create new user**, enter their email and a temporary password, and tick **Auto Confirm User**. Send them that password. They can change it under **Edit profile → Change password**.
+
+**Fixing a friend who is stuck** (invited, but never set a password): delete them under **Authentication → Users** and invite them again. Or have them use **Forgot password?** on the login page.
+
+**Alternative: open sign-ups briefly.** Turn on sign-ups in Supabase and set `VITE_ALLOW_SIGNUPS=true` in Cloudflare, then redeploy. Have your friend create an account, then switch both back.
+
+## Password emails
+Invite and "reset password" emails link back to `…/reeltracker/`, and the app sends people on to **/reeltracker/reset-password**. The Redirect URL `https://www.aimeeredmond.com/reeltracker/**` (step 5) already covers this.
 
 ## Running it locally like production
 ```bash
