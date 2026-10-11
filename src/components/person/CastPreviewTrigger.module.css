@@ -1,0 +1,39 @@
+.trigger {
+  display: block;
+  width: 100%;
+  padding: 6px;
+  margin: -6px;
+  border: none;
+  border-radius: var(--radius);
+  background: none;
+  text-align: inherit;
+  transition: background 0.15s;
+}
+
+.trigger:hover,
+.trigger:focus-visible {
+  background: var(--bg-hover);
+}
+
+/* Popover defaults centre the element on screen — position it next to the trigger instead (set in JS). */
+.card {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  width: min(360px, calc(100vw - 16px));
+  overflow-y: auto;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  animation: card-in 0.14s ease-out;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}

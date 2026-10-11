@@ -31,13 +31,31 @@
 }
 
 .name {
+  display: block;
   font-size: 14px;
   font-weight: 600;
   text-align: center;
 }
 
 .character {
+  display: block;
   font-size: 12px;
   color: var(--text-muted);
   text-align: center;
+}
+
+.list {
+  /* room for the trigger's hover background */
+  padding-top: 6px;
+  padding-left: 6px;
+}
+
+.modal {
+  width: min(560px, calc(100vw - 32px));
+}
+
+.modalBody {
+  padding: 24px;
+  max-height: calc(100dvh - 64px);
+  overflow-y: auto;
 }

@@ -100,3 +100,20 @@ export interface RawFindResult {
   tv_results: RawMedia[];
   tv_episode_results: RawFindEpisode[];
 }
+
+export interface RawPersonCredit extends RawMedia {
+  character?: string;
+  episode_count?: number;
+}
+
+export interface RawPerson {
+  id: number;
+  name: string;
+  biography?: string;
+  birthday?: string | null;
+  deathday?: string | null;
+  place_of_birth?: string | null;
+  known_for_department?: string;
+  profile_path: string | null;
+  combined_credits?: { cast: RawPersonCredit[] };
+}

@@ -32,7 +32,7 @@ Built with **React 19, TypeScript and Vite**. Movie and TV data comes from [TMDB
 | **Movies / TV Shows** | Category tabs (Popular, Trending, Top Rated, Upcoming…) and genre chips, with infinite scrolling. Anime is kept out and gets its own page. |
 | **Anime** | Its own page for Japanese animation (series and movies), with Popular, Airing Now, Top Rated and New Releases tabs and genre chips. It also has its own Watchlist / Watching / Completed section on your profile. |
 | **Quick View** | Press **+** on any poster for a pop-up preview with Watchlist, Watched and Add to list buttons, without leaving the page. |
-| **Detail pages** | Watchlist, Watching or Completed status, plus the cast, the trailer, an IMDb link and "More like this". **Movies:** log watches, including rewatches. **TV:** tick off episodes one at a time or a season at a time, use **Mark all as watched**, and log rewatches of a whole show, a season or a single episode. |
+| **Detail pages** | Watchlist, Watching or Completed status, plus the cast, the trailer, an IMDb link and "More like this". **Cast previews:** hover over a cast member (or tap one on a phone) to see their bio, the titles from your library they were in ("You've seen them in…"), and their best-known work. **Movies:** log watches, including rewatches. **TV:** tick off episodes one at a time or a season at a time, use **Mark all as watched**, and log rewatches of a whole show, a season or a single episode. |
 | **Profile** | **Upcoming Episodes** for the shows you track, then **separate TV and movie stats**: hours watched and counts for this week, the last 6 months, the last year and lifetime, plus a 12-month chart, top genres and recent activity. Below that are your custom lists, then paginated **Movies**, **TV Shows** and **Anime** shelves (Watchlist, Watching, Completed). |
 | **Smart status** | A show moves to **Completed** automatically once it has finished airing and you've watched every episode. Running shows stay on **Watching**. |
 | **Import & Sync** | Backup and restore. Import from **IMDb** (ratings and watchlist CSVs) and **TV Time** (data export). **Plex:** a one-off history import via "Sign in with Plex" (this also works on servers shared with you), plus automatic logging with Plex Pass. |
@@ -212,6 +212,13 @@ TMDB's season list and its `lastAiredEpisode` tell the app how many episodes hav
 
 - **`hooks/useRecommendations.ts`**: takes your 6 most recently updated titles and fetches TMDB recommendations for each in parallel (`useQueries`). Titles that appear for several of them score higher, and anything you already track is hidden.
 - **`hooks/useUpcomingEpisodes.ts`**: reads `nextEpisode` for every TV show you track (cached for 6 hours), sorted by air date. The cards show "Today", "Tomorrow" or the weekday, and a Season premiere or Finale badge.
+
+### 7c. Cast previews — `components/person/`, `hooks/usePerson.ts`
+
+- **Data:** one TMDB request (`/person/{id}?append_to_response=combined_credits`) is cached for a day, and prefetched as soon as you start hovering. `toPersonDetails` (in `mappers.ts`) drops talk shows, news, reality TV and "Himself" appearances, removes duplicates, and ranks credits by vote count to find what someone is best known for.
+- **"You've seen them in":** `useSeenIn` matches their credits against your library and watch history.
+- **On desktop:** a hover card (`CastPreviewTrigger`) uses the Popover API, so it can't be clipped by the scrolling cast row. It's positioned next to the cast member, and moves to fit as its content loads. It opens after a short delay (so sweeping the mouse across the row doesn't flash cards), stays open while you move onto it, opens on keyboard focus, and closes with Esc.
+- **On touch screens, or on click / Enter:** the same content opens in the shared `Modal`.
 
 ### 7b. Anime — `utils/media.ts` (`isAnime`), `components/browse/AnimeView.tsx`
 

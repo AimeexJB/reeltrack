@@ -92,3 +92,13 @@ export function formatAirDay(date: string, now = new Date()): string {
     ...(year !== now.getFullYear() && { year: 'numeric' }),
   }).format(value);
 }
+
+/** Whole years between a birthday and today (or the day they died). */
+export function getAge(birthday: string, deathday?: string | null): number {
+  const end = deathday ? new Date(deathday) : new Date();
+  const birth = new Date(birthday);
+  let age = end.getFullYear() - birth.getFullYear();
+  const hadBirthday = end.getMonth() > birth.getMonth() || (end.getMonth() === birth.getMonth() && end.getDate() >= birth.getDate());
+  if (!hadBirthday) age--;
+  return age;
+}

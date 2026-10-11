@@ -1,11 +1,11 @@
 /** One function per TMDB endpoint the app uses. Components call these through hooks in `@/hooks`. */
 
-import type { Episode, MediaDetails, MediaSummary, MediaType, PagedResult } from '@/types/media';
+import type { Episode, MediaDetails, MediaSummary, MediaType, PagedResult, PersonDetails } from '@/types/media';
 import type { SearchFilters, SortOption } from '@/types/search';
 import { todayIso } from '@/utils/date';
 import { tmdbFetch } from './client';
-import { toEpisode, toMediaDetails, toMediaSummary, toPagedResult } from './mappers';
-import type { RawDetails, RawFindResult, RawPaged, RawSeasonDetails } from './rawTypes';
+import { toEpisode, toMediaDetails, toMediaSummary, toPagedResult, toPersonDetails } from './mappers';
+import type { RawDetails, RawFindResult, RawPaged, RawPerson, RawSeasonDetails } from './rawTypes';
 
 type Paged = PagedResult<MediaSummary>;
 
@@ -107,4 +107,9 @@ export async function discover(mediaType: MediaType, filters: DiscoverFilters, p
     [isMovie ? 'primary_release_date.lte' : 'first_air_date.lte']: sort === 'newest' ? todayIso() : undefined,
   });
   return toPagedResult(raw, mediaType);
+}
+
+/** An actor's bio and every movie / TV credit, in one request. */
+export async function getPerson(id: number): Promise<PersonDetails> {
+  return toPersonDetails(await tmdbFetch<RawPerson>(`/person/${id}`, { append_to_response: 'combined_credits' }));
 }

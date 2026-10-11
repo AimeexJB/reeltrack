@@ -88,3 +88,24 @@ export interface PagedResult<T> {
   totalResults: number;
   results: T[];
 }
+
+/** A title a person appeared in. */
+export interface PersonCredit extends MediaSummary {
+  character: string;
+  /** TV only. */
+  episodeCount: number | null;
+}
+
+/** An actor's details for the cast preview. */
+export interface PersonDetails {
+  id: number;
+  name: string;
+  profilePath: string | null;
+  biography: string;
+  birthday: string | null;
+  deathday: string | null;
+  placeOfBirth: string | null;
+  knownForDepartment: string;
+  /** Acting credits, best-known first (talk shows and "Himself" appearances removed). */
+  credits: PersonCredit[];
+}

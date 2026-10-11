@@ -1,8 +1,8 @@
 /** Convert raw TMDB responses into the clean app types in `@/types/media`. */
 
 import { DEFAULT_EPISODE_RUNTIME, DEFAULT_MOVIE_RUNTIME } from '@/constants/defaults';
-import type { Episode, MediaDetails, MediaSummary, MediaType, PagedResult } from '@/types/media';
-import type { RawDetails, RawEpisode, RawMedia, RawPaged } from './rawTypes';
+import type { Episode, MediaDetails, MediaSummary, MediaType, PagedResult, PersonCredit, PersonDetails } from '@/types/media';
+import type { RawDetails, RawEpisode, RawMedia, RawPaged, RawPerson } from './rawTypes';
 
 export function toMediaSummary(raw: RawMedia, fallbackType?: MediaType): MediaSummary | null {
   const mediaType = raw.media_type ?? fallbackType;
@@ -91,5 +91,40 @@ export function toEpisode(raw: RawEpisode): Episode {
     airDate: raw.air_date,
     runtime: raw.runtime,
     stillPath: raw.still_path,
+  };
+}
+
+/** Talk shows, news and reality TV — appearances there aren't what people know an actor from. */
+const NON_ACTING_GENRES = [10767, 10763, 10764];
+const SELF_CHARACTER = /^(self|himself|herself|themselves|themself)\b/i;
+
+export function toPersonDetails(raw: RawPerson): PersonDetails {
+  const seen = new Set<string>();
+  const credits: PersonCredit[] = [];
+
+  for (const credit of raw.combined_credits?.cast ?? []) {
+    const media = toMediaSummary(credit);
+    if (!media) continue;
+    if (media.genreIds.some((id) => NON_ACTING_GENRES.includes(id))) continue;
+    if (SELF_CHARACTER.test(credit.character ?? '')) continue;
+    const key = `${media.mediaType}:${media.id}`;
+    if (seen.has(key)) continue; // TV credits can repeat (one per character)
+    seen.add(key);
+    credits.push({ ...media, character: credit.character ?? '', episodeCount: credit.episode_count ?? null });
+  }
+
+  // "Best known": vote count reflects lasting fame; popularity only says what's trending this week.
+  credits.sort((a, b) => b.voteCount - a.voteCount || b.popularity - a.popularity);
+
+  return {
+    id: raw.id,
+    name: raw.name,
+    profilePath: raw.profile_path,
+    biography: raw.biography ?? '',
+    birthday: raw.birthday ?? null,
+    deathday: raw.deathday ?? null,
+    placeOfBirth: raw.place_of_birth ?? null,
+    knownForDepartment: raw.known_for_department ?? 'Acting',
+    credits,
   };
 }
