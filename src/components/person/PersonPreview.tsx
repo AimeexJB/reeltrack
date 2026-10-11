@@ -23,9 +23,9 @@ interface PersonPreviewProps {
   currentKey?: string;
   /** id for the name heading, so a dialog can be labelled by it. */
   titleId?: string;
-  /** Larger layout for the pop-up (more bio, more titles). */
+  /** Larger layout (more bio, more titles). */
   expanded?: boolean;
-  /** Called when a title link is followed, so the card / pop-up can close. */
+  /** Called when a title link is followed, so the pop-up can close. */
   onNavigate?: () => void;
 }
 

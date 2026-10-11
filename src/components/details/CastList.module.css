@@ -59,3 +59,21 @@
   max-height: calc(100dvh - 64px);
   overflow-y: auto;
 }
+
+.trigger {
+  display: block;
+  width: 100%;
+  padding: 6px;
+  margin: -6px;
+  border: none;
+  border-radius: var(--radius);
+  background: none;
+  color: inherit;
+  text-align: inherit;
+  transition: background 0.15s;
+}
+
+.trigger:hover,
+.trigger:focus-visible {
+  background: var(--bg-hover);
+}
