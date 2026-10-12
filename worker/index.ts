@@ -3,7 +3,7 @@
  *
  * The routes in wrangler.jsonc send only `/reeltracker*` here — the rest of the domain
  * (the portfolio) is untouched. This Worker:
- *   1. redirects the bare domain to www, and `/reeltracker` → `/reeltracker/`
+ *   1. redirects http → https (same host first), then the bare domain to www, and `/reeltracker` → `/reeltracker/`
  *   2. proxies `/reeltracker/api/tmdb/*` to TMDB, adding the secret TMDB_TOKEN server-side
  *      (so the token never appears in the browser) — only for the requests the app makes,
  *      and rate-limited per visitor so nobody can burn through the TMDB quota
@@ -111,8 +111,16 @@ async function proxyTmdb(request: Request, path: string, search: string, env: En
 
 async function route(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
+  const isLiveDomain = url.hostname === CANONICAL_HOST || url.hostname === 'aimeeredmond.com';
 
-  // aimeeredmond.com/reeltracker… → www.aimeeredmond.com/reeltracker… (one address, so logins/storage are shared).
+  // 1. Plain http → https on the *same* host first (then step 2 moves it to www), so every hop is secure.
+  //    Skipped for local development, which runs on http://localhost.
+  if (isLiveDomain && url.protocol === 'http:') {
+    url.protocol = 'https:';
+    return Response.redirect(url.toString(), 301);
+  }
+
+  // 2. aimeeredmond.com/reeltracker… → www.aimeeredmond.com/reeltracker… (one address, so logins/storage are shared).
   if (url.hostname === 'aimeeredmond.com') {
     url.hostname = CANONICAL_HOST;
     return Response.redirect(url.toString(), 301);
