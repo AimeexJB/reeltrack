@@ -30,7 +30,7 @@ export function PlexSection() {
           <h3 className={styles.subheading}>Automatic sync</h3>
           <p className={styles.help}>
             Plex can tell Reeltrack every time you finish something, but it needs a public web address to send that to — which comes with
-            cloud sync. Set up Supabase (see <code>SUPABASE_SETUP.md</code>) and this option will appear here.
+            cloud sync. Connect Supabase (see the README) and this option will appear here.
           </p>
         </div>
       )}

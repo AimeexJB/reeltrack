@@ -57,7 +57,7 @@ npm run dev              # → http://localhost:5174
 | `VITE_SUPABASE_URL` | Optional | Supabase project → **Connect** |
 | `VITE_SUPABASE_KEY` | Optional | The **publishable** (or legacy *anon*) key. Never use the secret/service key. |
 
-Without the Supabase variables, everything is saved in your browser. To turn on cloud accounts, sync and Plex auto-sync, follow **[SUPABASE_SETUP.md](SUPABASE_SETUP.md)**. It takes about 10 minutes.
+Without the Supabase variables, everything is saved in your browser. To turn on cloud accounts and sync, create a Supabase project, run [`supabase/schema.sql`](supabase/schema.sql) in its SQL Editor, and add the project URL and publishable key to `.env`.
 
 ---
 
@@ -114,11 +114,9 @@ flowchart LR
 reeltrack/
 ├── worker/index.ts                Cloudflare Worker: serves the app at /reeltracker and proxies TMDB (hides the key)
 ├── wrangler.jsonc                 Cloudflare deploy config (route, static assets)
-├── DEPLOYMENT.md                  How to put the app online at www.aimeeredmond.com/reeltracker
 ├── supabase/
 │   ├── schema.sql                 Tables, row-level security, sign-up trigger, helper functions
 │   └── functions/plex-webhook/    Edge Function that receives Plex "finished watching" events
-├── SUPABASE_SETUP.md              Step-by-step cloud setup
 └── src/
     ├── api/tmdb/                  TMDB client, endpoint functions, raw types, mappers, image URLs
     ├── app/                       App providers, router (lazy pages), React Query client
@@ -257,7 +255,7 @@ This is a Deno Edge Function. With Plex Pass, Plex POSTs a `media.scrobble` even
 4. skips duplicates
 5. inserts a `watch_events` row and updates your library status
 
-Setup is in [SUPABASE_SETUP.md](SUPABASE_SETUP.md#6-plex-auto-sync-optional-needs-plex-pass-about-5-min).
+To set it up, deploy the function from the Supabase dashboard with JWT verification turned off, and add a `TMDB_TOKEN` secret. Then paste the webhook URL from **Import & Sync → Plex** into Plex's webhook settings.
 
 ### 11. UI building blocks — `src/components/ui/`
 
@@ -326,7 +324,11 @@ The live app is at **[www.aimeeredmond.com/reeltracker](https://www.aimeeredmond
 - **The TMDB key stays secret.** With `VITE_TMDB_PROXY=true`, the browser calls `/reeltracker/api/tmdb/…`, and `worker/index.ts` adds the `TMDB_TOKEN` secret on the server. That key is never sent to the browser.
 - **Invite only:** `VITE_ALLOW_SIGNUPS=false` hides sign-up, and sign-ups are also disabled in Supabase.
 
-Full setup steps are in **[DEPLOYMENT.md](DEPLOYMENT.md)**.
+To deploy your own copy, connect the repo in Cloudflare (**Workers & Pages → Import a repository**), with build command `npm run build`. Then set:
+- **Build variables:** `NODE_VERSION=22`, `BASE_PATH`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_KEY`, `VITE_TMDB_PROXY=true`, `VITE_ALLOW_SIGNUPS=false`.
+- **Runtime secret:** `TMDB_TOKEN`.
+
+The routes in `wrangler.jsonc` decide which URLs the Worker handles.
 
 ---
 

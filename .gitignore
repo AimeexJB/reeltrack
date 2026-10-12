@@ -11,3 +11,8 @@ supabase/.temp/
 supabase/.branches/
 .dev.vars
 .wrangler/
+
+# Personal docs (kept locally, not in the repo)
+LEARNING.md
+SUPABASE_SETUP.md
+DEPLOYMENT.md

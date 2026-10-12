@@ -29,7 +29,7 @@ export function CloudSyncSection() {
         <LocalDataMigration />
       ) : (
         <p className={styles.help}>
-          To turn on cloud sync, follow <code>SUPABASE_SETUP.md</code> in the project folder. Download a backup first (below) — or simply
+          To turn on cloud sync, connect a Supabase project (see the README). Download a backup first (below) — or simply
           log into your new cloud account in this browser and you'll be offered to move this data across.
         </p>
       )}

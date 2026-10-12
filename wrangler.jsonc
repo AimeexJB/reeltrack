@@ -1,4 +1,4 @@
-// Cloudflare deployment config — see DEPLOYMENT.md.
+// Cloudflare deployment config (Worker + static assets). See the README's "Deploying" section.
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "reeltrack",
