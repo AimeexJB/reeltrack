@@ -20,3 +20,10 @@ export function validateDisplayName(name: string): string | null {
   if (trimmed.length > DISPLAY_NAME_MAX) return `Display name must be ${DISPLAY_NAME_MAX} characters or fewer.`;
   return null;
 }
+
+/** Keep in sync with Supabase → Authentication → Sign In / Providers → Email → Minimum password length. */
+export const PASSWORD_MIN_LENGTH = 8;
+
+export function validatePassword(password: string): string | null {
+  return password.length >= PASSWORD_MIN_LENGTH ? null : `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`;
+}

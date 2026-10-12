@@ -15,6 +15,7 @@ Built with **React 19, TypeScript and Vite**. Movie and TV data comes from [TMDB
 - [Folder structure](#folder-structure)
 - [Key components](#key-components)
 - [Data model](#data-model)
+- [Security](#security)
 - [Performance](#performance)
 - [Scripts](#scripts)
 - [Deploying](#deploying)
@@ -280,6 +281,19 @@ The app types (`types/user.ts`) match the Supabase tables in `supabase/schema.sq
 Every table has **row-level security**, so users can only read and write their own rows. A trigger creates a profile on sign-up, and `username_available()` lets the sign-up form check a username without exposing anyone's profile.
 
 ---
+
+## Security
+
+| Area | How it's protected |
+| --- | --- |
+| **Your data** | Supabase **row-level security**: each user can only read or change their own rows. Anonymous visitors get nothing, and writes from anyone else are rejected. |
+| **Accounts** | Invite-only (sign-ups disabled in Supabase), with a minimum password length of 8 characters (`utils/validation.ts`). |
+| **Secrets** | The TMDB token lives only in Cloudflare (`TMDB_TOKEN` secret). The browser never sees it. The Supabase *publishable* key is public by design. No secrets are in the repo. |
+| **TMDB proxy** (`worker/index.ts`) | Allows only the read-only TMDB endpoints the app uses, caps the query length, and **rate-limits each visitor** (300 requests a minute) using Cloudflare's rate limiter (`wrangler.jsonc`). |
+| **Browser protections** | Every response gets a strict **Content Security Policy** (only our own scripts; network access limited to TMDB images, Supabase and Plex), plus HSTS, `X-Frame-Options: DENY` / `frame-ancestors 'none'` (no clickjacking), `nosniff`, a strict referrer policy and a locked-down Permissions-Policy. |
+| **Plex** | Plex tokens are only held in memory during an import. The webhook URL contains a secret per-user token, which you can regenerate. |
+
+If you change which TMDB endpoints the app calls, update `ALLOWED_TMDB_PATHS` in `worker/index.ts`. If the app needs to talk to a new service, add it to the CSP there.
 
 ## Performance
 

@@ -5,6 +5,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { APP_NAME } from '@/constants/defaults';
 import { paths } from '@/constants/routes';
 import { useAuth } from '@/context/AuthContext';
+import { PASSWORD_MIN_LENGTH } from '@/utils/validation';
 import styles from './LoginPage.module.css';
 
 type Mode = 'login' | 'register';
@@ -101,7 +102,7 @@ export default function LoginPage() {
             type="password"
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
             required
-            minLength={mode === 'register' ? 6 : undefined}
+            minLength={mode === 'register' ? PASSWORD_MIN_LENGTH : undefined}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />

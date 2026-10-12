@@ -5,7 +5,7 @@
 
 import type { User } from '@/types/user';
 import { createId } from '@/utils/id';
-import { normalizeUsername, validateDisplayName, validateUsername } from '@/utils/validation';
+import { normalizeUsername, validateDisplayName, validatePassword, validateUsername } from '@/utils/validation';
 import { storage } from '../storage';
 import type { AuthService } from '../types';
 
@@ -64,7 +64,8 @@ export const localAuthService: AuthService = {
     const normalized = normalizeUsername(username);
     const usernameError = validateUsername(normalized);
     if (usernameError) throw new Error(usernameError);
-    if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+    const passwordError = validatePassword(password);
+    if (passwordError) throw new Error(passwordError);
 
     const users = getStoredUsers();
     if (users.some((user) => user.username === normalized)) throw new Error('That username is already taken.');

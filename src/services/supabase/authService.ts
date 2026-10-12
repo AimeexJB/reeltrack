@@ -2,7 +2,7 @@
 
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import type { User } from '@/types/user';
-import { normalizeUsername, validateDisplayName, validateUsername } from '@/utils/validation';
+import { normalizeUsername, validateDisplayName, validatePassword, validateUsername } from '@/utils/validation';
 import type { AuthLinkInfo, AuthService } from '../types';
 import { getSupabase } from './client';
 import { toUser, type ProfileRow } from './rows';
@@ -71,6 +71,8 @@ export const supabaseAuthService: AuthService = {
     const normalized = normalizeUsername(username);
     const usernameError = validateUsername(normalized);
     if (usernameError) throw new Error(usernameError);
+    const passwordError = validatePassword(password);
+    if (passwordError) throw new Error(passwordError);
     const client = await getSupabase();
     const { data: available } = await client.rpc('username_available', { name: normalized });
     if (available === false) throw new Error('That username is already taken.');
@@ -127,7 +129,8 @@ export const supabaseAuthService: AuthService = {
   },
 
   async setPassword(password) {
-    if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+    const passwordError = validatePassword(password);
+    if (passwordError) throw new Error(passwordError);
     const { error } = await (await getSupabase()).auth.updateUser({ password });
     if (error) throw new Error(error.message);
   },

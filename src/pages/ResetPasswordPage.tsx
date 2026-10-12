@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 import { paths } from '@/constants/routes';
 import { useAuth } from '@/context/AuthContext';
+import { PASSWORD_MIN_LENGTH } from '@/utils/validation';
 import styles from './LoginPage.module.css';
 
 /**
@@ -64,12 +65,12 @@ function SetPasswordForm({ isNewAccount }: { isNewAccount: boolean }) {
         </p>
 
         <label className={styles.field}>
-          <span>New password</span>
-          <input className="input" type="password" autoComplete="new-password" minLength={6} required value={password} onChange={(event) => setPasswordValue(event.target.value)} />
+          <span>New password (at least {PASSWORD_MIN_LENGTH} characters)</span>
+          <input className="input" type="password" autoComplete="new-password" minLength={PASSWORD_MIN_LENGTH} required value={password} onChange={(event) => setPasswordValue(event.target.value)} />
         </label>
         <label className={styles.field}>
           <span>Confirm password</span>
-          <input className="input" type="password" autoComplete="new-password" minLength={6} required value={confirm} onChange={(event) => setConfirm(event.target.value)} />
+          <input className="input" type="password" autoComplete="new-password" minLength={PASSWORD_MIN_LENGTH} required value={confirm} onChange={(event) => setConfirm(event.target.value)} />
         </label>
 
         {error && (
