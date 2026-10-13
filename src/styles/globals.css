@@ -109,6 +109,19 @@ img {
   min-height: 42px;
 }
 
+/*
+ * iOS Safari zooms the page in whenever you tap a text box with text smaller than 16px, and because
+ * the app is a single page the zoom sticks across screens. 16px on touch devices prevents that
+ * (!important so it beats component styles; desktop keeps its smaller sizes).
+ */
+@media (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 .input:focus,
 .select:focus {
   border-color: var(--accent);

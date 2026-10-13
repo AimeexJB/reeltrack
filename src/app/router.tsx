@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
+import { RouteError } from '@/components/layout/RouteError';
 
 // Each page is code-split, so the first load only downloads what the current page needs.
 const HomePage = lazy(() => import('@/pages/HomePage'));
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <AppLayout />,
+    errorElement: <RouteError />,
     children: [
       { index: true, element: <HomePage /> },
       { path: 'search', element: <SearchPage /> },

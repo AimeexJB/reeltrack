@@ -21,7 +21,7 @@ export default function MediaDetailPage({ mediaType }: { mediaType: MediaType })
     <div key={`${mediaType}-${id}`}>
       <DetailHero details={details} />
       {mediaType === 'tv' && <SeasonList show={details} />}
-      <CastList cast={details.cast} currentKey={`${mediaType}:${id}`} />
+      <CastList cast={details.cast} mediaType={mediaType} mediaId={id} />
       {details.recommendations.length > 0 && <MediaRow title="More like this" items={details.recommendations} />}
     </div>
   );

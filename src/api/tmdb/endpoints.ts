@@ -1,11 +1,11 @@
 /** One function per TMDB endpoint the app uses. Components call these through hooks in `@/hooks`. */
 
-import type { Episode, MediaDetails, MediaSummary, MediaType, PagedResult, PersonDetails } from '@/types/media';
+import type { CastMember, Episode, MediaDetails, MediaSummary, MediaType, PagedResult, PersonDetails } from '@/types/media';
 import type { SearchFilters, SortOption } from '@/types/search';
 import { todayIso } from '@/utils/date';
 import { tmdbFetch } from './client';
-import { toEpisode, toMediaDetails, toMediaSummary, toPagedResult, toPersonDetails } from './mappers';
-import type { RawDetails, RawFindResult, RawPaged, RawPerson, RawSeasonDetails } from './rawTypes';
+import { toAggregateCast, toCastMember, toEpisode, toMediaDetails, toMediaSummary, toPagedResult, toPersonDetails } from './mappers';
+import type { RawAggregateCast, RawCast, RawDetails, RawFindResult, RawPaged, RawPerson, RawSeasonDetails } from './rawTypes';
 
 type Paged = PagedResult<MediaSummary>;
 
@@ -16,7 +16,7 @@ export async function getMediaList(path: string, mediaType?: MediaType, page = 1
 
 export async function getMediaDetails(mediaType: MediaType, id: number): Promise<MediaDetails> {
   const raw = await tmdbFetch<RawDetails>(`/${mediaType}/${id}`, {
-    append_to_response: 'credits,videos,recommendations,external_ids',
+    append_to_response: `${mediaType === 'tv' ? 'aggregate_credits' : 'credits'},videos,recommendations,external_ids`,
   });
   return toMediaDetails(raw, mediaType);
 }
@@ -112,4 +112,17 @@ export async function discover(mediaType: MediaType, filters: DiscoverFilters, p
 /** An actor's bio and every movie / TV credit, in one request. */
 export async function getPerson(id: number): Promise<PersonDetails> {
   return toPersonDetails(await tmdbFetch<RawPerson>(`/person/${id}`, { append_to_response: 'combined_credits' }));
+}
+
+/**
+ * Everyone in the cast. Movies: the full billing order. TV: every season ("aggregate credits"),
+ * main cast first. Loaded only when "Show full cast" is pressed.
+ */
+export async function getFullCast(mediaType: MediaType, id: number): Promise<CastMember[]> {
+  if (mediaType === 'tv') {
+    const raw = await tmdbFetch<{ cast: RawAggregateCast[] }>(`/tv/${id}/aggregate_credits`);
+    return toAggregateCast(raw.cast);
+  }
+  const raw = await tmdbFetch<{ cast: RawCast[] }>(`/movie/${id}/credits`);
+  return raw.cast.map(toCastMember);
 }

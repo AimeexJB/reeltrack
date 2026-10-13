@@ -13,10 +13,14 @@
   grid-auto-flow: column;
   grid-auto-columns: 110px;
   gap: 16px;
+  /* Sideways only: overflow-x: auto alone would also make the row scroll up/down slightly on phones. */
   overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
   list-style: none;
-  margin: 0;
-  padding: 0 0 4px;
+  margin: 0 -6px;
+  /* Room for each person's hover highlight, so it stays inside the row. */
+  padding: 6px;
   scrollbar-width: none;
 }
 
@@ -44,10 +48,27 @@
   text-align: center;
 }
 
-.list {
-  /* room for the trigger's hover background */
-  padding-top: 6px;
-  padding-left: 6px;
+/* Full cast: wraps onto as many rows as needed. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 20px 16px;
+  list-style: none;
+  margin: 0 -6px;
+  padding: 6px;
+  justify-items: center;
+}
+
+.episodes {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+.toggle {
+  margin-top: 10px;
 }
 
 .modal {

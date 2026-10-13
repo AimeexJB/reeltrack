@@ -34,6 +34,16 @@ export interface RawCast {
   profile_path: string | null;
 }
 
+/** TV "aggregate credits": everyone across every season, with each role's episode count. */
+export interface RawAggregateCast {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  roles?: { character: string; episode_count: number }[];
+  total_episode_count?: number;
+  order?: number;
+}
+
 export interface RawVideo {
   key: string;
   site: string;
@@ -77,6 +87,8 @@ export interface RawDetails extends RawMedia {
   imdb_id?: string | null;
   external_ids?: { imdb_id?: string | null };
   credits?: { cast: RawCast[] };
+  /** TV only — cast across every season (requested instead of `credits` for shows). */
+  aggregate_credits?: { cast: RawAggregateCast[] };
   videos?: { results: RawVideo[] };
   recommendations?: RawPaged;
   seasons?: RawSeason[];

@@ -1,8 +1,8 @@
 /** Convert raw TMDB responses into the clean app types in `@/types/media`. */
 
 import { DEFAULT_EPISODE_RUNTIME, DEFAULT_MOVIE_RUNTIME } from '@/constants/defaults';
-import type { Episode, MediaDetails, MediaSummary, MediaType, PagedResult, PersonCredit, PersonDetails } from '@/types/media';
-import type { RawDetails, RawEpisode, RawMedia, RawPaged, RawPerson } from './rawTypes';
+import type { CastMember, Episode, MediaDetails, MediaSummary, MediaType, PagedResult, PersonCredit, PersonDetails } from '@/types/media';
+import type { RawAggregateCast, RawCast, RawDetails, RawEpisode, RawMedia, RawPaged, RawPerson } from './rawTypes';
 
 export function toMediaSummary(raw: RawMedia, fallbackType?: MediaType): MediaSummary | null {
   const mediaType = raw.media_type ?? fallbackType;
@@ -34,6 +34,31 @@ export function toPagedResult(raw: RawPaged, fallbackType?: MediaType): PagedRes
   };
 }
 
+/** How many cast members the detail page's row shows ("Show full cast" loads everyone). */
+const TOP_CAST = 20;
+
+export function toCastMember(member: RawCast): CastMember {
+  return { id: member.id, name: member.name, character: member.character ?? '', profilePath: member.profile_path };
+}
+
+/** TV full cast: main cast first (most episodes), with their characters and episode count. */
+export function toAggregateCast(cast: RawAggregateCast[]): CastMember[] {
+  return [...cast]
+    .sort((a, b) => (b.total_episode_count ?? 0) - (a.total_episode_count ?? 0) || (a.order ?? 0) - (b.order ?? 0))
+    .map((member) => ({
+      id: member.id,
+      name: member.name,
+      character: [...(member.roles ?? [])]
+        .sort((a, b) => b.episode_count - a.episode_count)
+        .map((role) => role.character)
+        .filter(Boolean)
+        .slice(0, 2)
+        .join(' / '),
+      profilePath: member.profile_path,
+      episodeCount: member.total_episode_count,
+    }));
+}
+
 export function toMediaDetails(raw: RawDetails, mediaType: MediaType): MediaDetails {
   const summary = toMediaSummary(raw, mediaType)!;
   const trailer = raw.videos?.results.find((video) => video.site === 'YouTube' && video.type === 'Trailer');
@@ -49,12 +74,12 @@ export function toMediaDetails(raw: RawDetails, mediaType: MediaType): MediaDeta
     runtime,
     status: raw.status ?? '',
     imdbId: raw.imdb_id ?? raw.external_ids?.imdb_id ?? null,
-    cast: (raw.credits?.cast ?? []).slice(0, 15).map((member) => ({
-      id: member.id,
-      name: member.name,
-      character: member.character ?? '',
-      profilePath: member.profile_path,
-    })),
+    // TV: TMDB's plain `credits` only covers the latest season (sometimes just 2 people), so use the
+    // every-season list, main cast first. Movies: billing order.
+    cast:
+      mediaType === 'tv' && raw.aggregate_credits
+        ? toAggregateCast(raw.aggregate_credits.cast).slice(0, TOP_CAST)
+        : (raw.credits?.cast ?? []).slice(0, TOP_CAST).map(toCastMember),
     trailerKey: trailer?.key ?? null,
     recommendations: raw.recommendations ? toPagedResult(raw.recommendations, mediaType).results : [],
     seasons: (raw.seasons ?? []).map((season) => ({

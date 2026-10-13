@@ -30,6 +30,8 @@ export interface CastMember {
   name: string;
   character: string;
   profilePath: string | null;
+  /** TV full cast only: episodes they appear in. */
+  episodeCount?: number;
 }
 
 export interface SeasonSummary {

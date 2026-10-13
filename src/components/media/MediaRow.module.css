@@ -60,6 +60,7 @@
   grid-auto-columns: var(--card-width);
   gap: 16px;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   padding-bottom: 4px;

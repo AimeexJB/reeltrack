@@ -3,10 +3,9 @@ import { CheckCheck, Eye, RotateCcw } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { useLibrary } from '@/context/LibraryContext';
-import { seasonQuery } from '@/hooks/useMediaQueries';
+import { fetchAiredEpisodes } from '@/hooks/useMediaQueries';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
-import type { Episode, MediaDetails } from '@/types/media';
-import { hasAired } from '@/utils/date';
+import type { MediaDetails } from '@/types/media';
 import { minutesToHours, pluralize } from '@/utils/format';
 import { toSummary } from '@/utils/media';
 import { airedEpisodesBySeason, getShowProgress, hasFinishedAiring } from '@/utils/tvProgress';
@@ -29,10 +28,7 @@ export function ShowWatchActions({ show }: { show: MediaDetails }) {
   const caughtUp = progress.watchedCount === progress.airedCount;
 
   /** Downloads the episode lists (cached) for the given seasons and keeps only aired episodes. */
-  const loadAiredEpisodes = async (seasonNumbers: number[]): Promise<Episode[]> => {
-    const seasons = await Promise.all(seasonNumbers.map((number) => queryClient.fetchQuery(seasonQuery(show.id, number))));
-    return seasons.flat().filter((episode) => hasAired(episode.airDate));
-  };
+  const loadAiredEpisodes = (seasonNumbers: number[]) => fetchAiredEpisodes(queryClient, show.id, seasonNumbers);
 
   const run = (task: () => Promise<void>) =>
     requireAuth(async () => {

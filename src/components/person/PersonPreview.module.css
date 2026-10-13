@@ -121,6 +121,7 @@
   grid-auto-columns: 84px;
   gap: 10px;
   overflow-x: auto;
+  overflow-y: hidden;
   list-style: none;
   margin: 0;
   padding: 0 0 4px;

@@ -36,7 +36,8 @@ export function SearchInput({ value, onChange }: SearchInputProps) {
         aria-label="Search by title"
         value={text}
         onChange={(event) => setText(event.target.value)}
-        autoFocus={!value}
+        // Focus straight away on computers only — on phones it would pop up the keyboard as the page opens.
+        autoFocus={!value && window.matchMedia('(pointer: fine)').matches}
       />
     </div>
   );

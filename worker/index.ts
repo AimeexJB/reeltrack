@@ -31,6 +31,7 @@ const ALLOWED_TMDB_PATHS = [
   /^\/trending\/(all|movie|tv)\/(day|week)$/,
   /^\/(movie|tv)\/(popular|top_rated|now_playing|upcoming|airing_today|on_the_air)$/,
   /^\/(movie|tv)\/\d+(\/recommendations)?$/,
+  /^\/(movie|tv)\/\d+\/(credits|aggregate_credits)$/,
   /^\/tv\/\d+\/season\/\d+$/,
   /^\/discover\/(movie|tv)$/,
   /^\/search\/(multi|movie|tv)$/,
@@ -133,7 +134,32 @@ async function route(request: Request, env: Env): Promise<Response> {
 
   if (path.startsWith('/api/tmdb/')) return proxyTmdb(request, path.slice('/api/tmdb'.length), url.search, env);
 
-  return env.ASSETS.fetch(new Request(new URL(path + url.search, url.origin), request));
+  return serveAsset(request, path + url.search, url.origin, env);
+}
+
+/**
+ * Built files in /assets/ have the content hash in their name (index-a1b2c3.js), so they never change:
+ * browsers may cache them for a year. HTML must always be re-checked, so a new deploy is picked up.
+ * A missing /assets/ file (e.g. an old tab asking for last deploy's file) gets a real 404 —
+ * not index.html, which browsers would choke on as "Unable to preload CSS".
+ */
+async function serveAsset(request: Request, pathAndQuery: string, origin: string, env: Env): Promise<Response> {
+  const response = await env.ASSETS.fetch(new Request(new URL(pathAndQuery, origin), request));
+  const isHtml = (response.headers.get('Content-Type') ?? '').includes('text/html');
+
+  if (pathAndQuery.startsWith('/assets/')) {
+    if (isHtml) return new Response('Not found', { status: 404, headers: { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' } });
+    const cached = new Response(response.body, response);
+    cached.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+    return cached;
+  }
+
+  if (isHtml) {
+    const fresh = new Response(response.body, response);
+    fresh.headers.set('Cache-Control', 'no-cache');
+    return fresh;
+  }
+  return response;
 }
 
 export default {
