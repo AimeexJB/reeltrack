@@ -1,9 +1,11 @@
 import { ExternalLink, Play, Star } from 'lucide-react';
 import { imageUrl } from '@/api/tmdb';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
+import { paths } from '@/constants/routes';
 import { MEDIA_TYPE_LABELS } from '@/constants/tracking';
 import type { MediaDetails } from '@/types/media';
 import { getYear } from '@/utils/date';
-import { toSummary } from '@/utils/media';
+import { isAnime, toSummary } from '@/utils/media';
 import { formatRuntime, pluralize } from '@/utils/format';
 import { ShowWatchActions } from './ShowWatchActions';
 import { TrackActions } from './TrackActions';
@@ -21,10 +23,19 @@ export function DetailHero({ details }: { details: MediaDetails }) {
     details.status,
   ].filter(Boolean);
 
+  // Anime lives under its own section, matching the sidebar.
+  const section = isAnime(details)
+    ? { label: 'Anime', to: paths.anime }
+    : details.mediaType === 'movie'
+      ? { label: 'Movies', to: paths.movies }
+      : { label: 'TV Shows', to: paths.tvShows };
+
   return (
     <section className={styles.hero}>
       {backdrop && <img src={backdrop} alt="" className={styles.backdrop} fetchPriority="high" />}
       <div className={styles.overlay} />
+
+      <Breadcrumbs items={[{ label: 'Home', to: paths.home }, section, { label: details.title }]} className={styles.breadcrumbs} />
 
       <div className={styles.content}>
         <div className={styles.poster}>{poster && <img src={poster} alt={`${details.title} poster`} />}</div>

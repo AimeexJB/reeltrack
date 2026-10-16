@@ -1,7 +1,7 @@
 .hero {
   position: relative;
   margin: -24px calc(var(--page-padding) * -1) 40px;
-  padding: 48px var(--page-padding) 32px;
+  padding: 20px var(--page-padding) 32px;
   overflow: hidden;
 }
 
@@ -19,6 +19,11 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(0deg, var(--bg) 0%, rgba(11, 13, 18, 0.7) 50%, rgba(11, 13, 18, 0.4) 100%);
+}
+
+.breadcrumbs {
+  position: relative;
+  margin-bottom: 28px;
 }
 
 .content {
